@@ -2,6 +2,8 @@
 
 Connect an MCP Client that only supports local (stdio) servers to a Remote MCP Server, with auth support:
 
+Forked to support static OAuth client metadata + client information CLI arguments.
+
 **Note: this is a working proof-of-concept** but should be considered **experimental**.
 
 ## Why is this necessary?
@@ -131,6 +133,30 @@ npx mcp-remote https://example.remote/server --transport sse-only
 - `http-only`: Only uses HTTP transport, fails if the server doesn't support it
 - `sse-only`: Only uses SSE transport, fails if the server doesn't support it
 
+#### Static OAuth Client Metadata
+
+MCP Remote supports providing static OAuth client metadata instead of using the mcp-remote defaults.
+This is useful when connecting to OAuth servers that expect specific client/software IDs or scopes.
+
+Provide the client metadata as JSON with the `--static-oauth-client-metadata` flag:
+
+```bash
+npx mcp-remote https://example.remote/server --static-oauth-client-metadata '{ "scope": "space separated scopes" }'
+```
+
+### Static OAuth Client Information
+
+MCP Remote supports providing static OAuth client information instead of using dynamic client registration.
+This is useful when connecting to OAuth servers that require pre-registered clients.
+
+Provide the client information with the `--static-oauth-client-info` flag:
+
+```bash
+export MCP_REMOTE_CLIENT_ID=xxx
+export MCP_REMOTE_CLIENT_SECRET=yyy
+npx mcp-remote https://example.remote/server --static-oauth-client-info "{ \"client_id\": \"$MCP_REMOTE_CLIENT_ID\", \"client_secret\": \"$MCP_REMOTE_CLIENT_SECRET\" }"
+```
+
 ### Claude Desktop
 
 [Official Docs](https://modelcontextprotocol.io/quickstart/user)
@@ -187,7 +213,7 @@ Then restarting your MCP client.
 
 ### Check your Node version
 
-Make sure that the version of Node you have installed is [18 or 
+Make sure that the version of Node you have installed is [18 or
 higher](https://modelcontextprotocol.io/quickstart/server). Claude
 Desktop will use your system version of Node, even if you have a newer
 version installed elsewhere.
